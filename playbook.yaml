@@ -1,0 +1,28 @@
+---
+- hosts: appserver
+  become: true
+  tasks:
+        - name: install pip
+          apt:
+            name: python-pip
+            state: present
+        - name: install docker-py python module
+          pip:
+            name: docker-py
+            state: present
+        - name: install docker
+          apt:
+            name: docker.io
+            state: present
+        - name: start docker service
+          service:
+            name: docker
+            state: started
+            enabled: yes
+        - name: start the container
+          docker_container:
+                  name: my-jar-app
+                  image: "ankit8917/my-jar-app:2.0"
+                  state: started
+                  published_ports:
+                     - 8917:8888
